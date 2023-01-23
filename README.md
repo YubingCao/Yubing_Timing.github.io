@@ -15,3 +15,6 @@ Wenn der gemessene Abstand näher am Intervall C liegt, dreht sich der Motor mit
 Wenn sich das Objekt genau in Intervall C befindet, zeigt der Zeiger auf das Objekt und ein Atemlicht blinkt im Inneren des Steins auf.
 
 Wenn sich das Objekt länger als 5 Sekunden in der angegebenen Zone befindet, wählt das Programm eine neue Zone nach dem Zufallsprinzip aus und wiederholt die obige Anweisung.
+
+mit freundlichen Grüßen,
+Yubing Cao
