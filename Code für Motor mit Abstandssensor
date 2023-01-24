@@ -1,3 +1,14 @@
+/*
+ * created by Rui Santos, https://randomnerdtutorials.com
+ * 
+ * Complete Guide for Ultrasonic Sensor HC-SR04
+ *
+    Ultrasonic sensor Pins:
+        VCC: +5VDC
+        Trig : Trigger (INPUT) - Pin11
+        Echo: Echo (OUTPUT) - Pin 12
+        GND: GND
+ */
 #include <Servo.h>
 Servo myservo;
  
@@ -34,12 +45,18 @@ void loop() {
  
   // Convert the time into a distance
   cm = (duration/2) / 29.1;     // Divide by 29.1 or multiply by 0.0343
-  inches = (duration/2) / 74;   // Divide by 74 or multiply by 0.0135
   
-  val = (cm);
-  val = map(val, 0, 50, 0, 180);
-  myservo.write(val);
-  delay(15);
+  if ( 0 < int (cm) <30 ) {
+    myservo.write(?);           // Der Motor  dreht sich mit einer kleinen Amplitude (z. B. ziwischen 30 Grad - 60 Grad hin und her pendeln) und mit einer langsamen Geschwindigkeit hin und her.
+  }
+  
+   else if ( 30 < int (cm) <60 ) {
+    myservo.write(?);           // Der Zeiger zeigt auf die Person und ein Atemlicht blinkt im Inneren des Steins auf.
+}
+
+   else if ( 60 < int (cm) <90 ) {
+    myservo.write(45);           // Der Motor dreht sich mit einer größeren Amplitude (z. B. ziwischen 45 Grad - 135 Grad hin und her pendeln) und einer höheren Geschwindigkeit hin und her.
+}
   
   Serial.print(inches);
   Serial.print("in, ");
