@@ -2,17 +2,15 @@
 
 Hallo Martin,
 
-Der Code ermöglicht nun, dass der Abstandssensor die Drehung des Servomotors steuert. Ich möchte noch manche Komplexe Funktionen schaffen.
+Das ist mein neuer Code.
 
 Wenn sich der Servomotor um 45 Grad dreht, bedeutet dies, dass der Zeiger auf das zu messende Objekt gerichtet ist.
 
-Der Abstandssensor ist so eingestellt, dass er Entfernungen im Bereich von 0-90 cm erfasst, wobei die Intervalle auf 30 cm eingestellt sind (insgesamt gibt es 3 Intervalle).
+Zu Beginn wird der Code so eingestellt, dass der Pfeil auf die Person zeigt, wenn sich die Person im Bereich von 30-50 cm(Erkennbare Entfernung: 100 cm) vor dem Sensor befindet (dieser Bereich wird als " richtige Bereich X " bezeichnet). In diesem Fall pendelt der Pfeil stark, wenn die Person näher als 30 cm vom Sensor entfernt steht, und er pendelt leicht, wenn die Person weiter als 50 cm vom Sensor entfernt steht.
 
-wenn die Person an der Bereich 0-30cm steht, dreht sich der Motor mit einer größeren Amplitude(z. B. ziwischen 45 Grad - 135 Grad pendeln) und mit einer langsamen Geschwindigkeit hin und her.
+Wenn die Person 3 Sekunden lang im "richtigen Bereich X" steht, beginnt sich der "richtige Bereich X" zufällig zu bewegen (innerhalb eines erkennbaren Bereichs von 100 cm), und die Person muss entscheiden, ob sie sich vor oder zurück bewegt, um den "richtigen Bereich X" zu finden, je nachdem, wie der Pfeil reagiert (wie schnell oder langsam er pendelt). Wenn sich die Person wieder im "richtigen Bereich X" befindet, geht der Kreislauf weiter.
 
-Wenn die Person an der Bereich 30-60cm steht, zeigt der Zeiger auf das Objekt und ein Atemlicht blinkt im Inneren des Steins auf.
-
-Wenn die Person an der Bereich 60-90cm befindet,dreht sich der Motor mit einer kleinen Amplitude (z. B. ziwischen 30 Grad - 60 Grad pendeln) und einer höheren Geschwindigkeit hin und her.
+Wenn innerhalb des gesamten Erfassungsbereichs keine Person erkannt wird, bleibt der Zeiger auf 0 Grad stehen, und der " richtige Bereich X " wird auf einen Wert zwischen 30 und 50 cm zurückgesetzt.
 
 mit freundlichen Grüßen,
 Yubing Cao
