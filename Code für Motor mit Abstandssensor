@@ -46,18 +46,22 @@ void loop() {
   // Convert the time into a distance
   cm = (duration/2) / 29.1;     // Divide by 29.1 or multiply by 0.0343
   
-  if ( 0 < int (cm) <30 ) {
-    myservo.write(?);           // Der Motor  dreht sich mit einer kleinen Amplitude (z. B. ziwischen 30 Grad - 60 Grad hin und her pendeln) und mit einer langsamen Geschwindigkeit hin und her.
+  if ( int(cm) <10 ) {
+    myservo.write(45);
+    delay(200);
+    myservo.write(135);
   }
   
-   else if ( 30 < int (cm) <60 ) {
-    myservo.write(?);           // Der Zeiger zeigt auf die Person und ein Atemlicht blinkt im Inneren des Steins auf.
+  if ( 10 < int(cm) < 20 ) {
+    myservo.write(90);
+}
+0
+  if ( int(cm) > 30 ) {
+    myservo.write(60);
+    delay(2000);
+    myservo.write(120);
 }
 
-   else if ( 60 < int (cm) <90 ) {
-    myservo.write(45);           // Der Motor dreht sich mit einer größeren Amplitude (z. B. ziwischen 45 Grad - 135 Grad hin und her pendeln) und einer höheren Geschwindigkeit hin und her.
-}
-  
   Serial.print(inches);
   Serial.print("in, ");
   Serial.print(cm);
@@ -65,4 +69,3 @@ void loop() {
   Serial.println();
   
   delay(250);
-}
