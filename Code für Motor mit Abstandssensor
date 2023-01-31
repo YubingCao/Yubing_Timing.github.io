@@ -52,15 +52,15 @@ void loop() {
     myservo.write(135);
   }
   
-  if ( 10 < int(cm) < 20 ) {
+  else if ( 10 <= int(cm) < 20 ) {
     myservo.write(90);
 }
-0
-  if ( int(cm) > 30 ) {
+
+  else if ( 20 <= int(cm) <=30 ) {
     myservo.write(60);
     delay(2000);
     myservo.write(120);
-}
+} else {myservo.write(0);}
 
   Serial.print(inches);
   Serial.print("in, ");
@@ -69,3 +69,4 @@ void loop() {
   Serial.println();
   
   delay(250);
+ }
