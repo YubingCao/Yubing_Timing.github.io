@@ -1,71 +1,131 @@
-/*
- * created by Rui Santos, https://randomnerdtutorials.com
- * 
- * Complete Guide for Ultrasonic Sensor HC-SR04
- *
-    Ultrasonic sensor Pins:
-        VCC: +5VDC
-        Trig : Trigger (INPUT) - Pin11
-        Echo: Echo (OUTPUT) - Pin 12
-        GND: GND
- */
+#include <Wire.h>
+#include <VL53L1X.h>
 #include <Servo.h>
-Servo myservo;
- 
-int trigPin = 11;    // Trigger
-int echoPin = 12;    // Echo
-int val;
+#include "ServoEaser.h"
 
-long duration, cm, inches;
- 
+VL53L1X sensor;
+
+const int servoPin = 2;
+
+int dist = 0;
+int dist_state = 0;
+int dist_state_old = 0;
+int rand_dist = 0;
+unsigned long delayStart = 0;
+
+int servoFrameMillis = 20;  // minimum time between servo updates
+
+Servo servo1; 
+ServoEaser servoEaser;
+
+int myServoMovesCount0 = 1;
+ServoMove myServoMoves0[] = {
+// angle, duration
+  { 0, 100},
+};
+
+int myServoMovesCount1 = 2;
+ServoMove myServoMoves1[] = {
+// angle, duration
+  { 0, 2000},
+  { 180, 2000},
+};
+
+int myServoMovesCount2 = 2;
+ServoMove myServoMoves2[] = {
+// angle, duration
+  { 80, 1200},
+  { 90, 1200},
+
+};
+
+int myServoMovesCount3 = 2;
+ServoMove myServoMoves3[] = {
+// angle, duration
+  { 60, 700},
+  { 120, 700},
+
+};
+
+
 void setup() {
-  //Serial Port begin
-  Serial.begin (9600);
-  //Define inputs and outputs
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+  delayStart = millis();
+  rand_dist = random(200,1000);
+  while (!Serial) {}
+  Serial.begin(115200);
+  Wire.begin();
+  Wire.setClock(400000); // use 400 kHz I2C
+
+  sensor.setTimeout(500);
+  if (!sensor.init())
+  {
+    Serial.println("Failed to detect and initialize sensor!");
+    while (1);
+  }
+
+  // Use long distance mode and allow up to 50000 us (50 ms) for a measurement.
+  // You can change these settings to adjust the performance of the sensor, but
+  // the minimum timing budget is 20 ms for short distance mode and 33 ms for
+  // medium and long distance modes. See the VL53L1X datasheet for more
+  // information on range and timing limits.
+  sensor.setDistanceMode(VL53L1X::Long);
+  sensor.setMeasurementTimingBudget(50000);
+
+  // Start continuous readings at a rate of one measurement every 50 ms (the
+  // inter-measurement period). This period should be at least as long as the
+  // timing budget.
+  sensor.startContinuous(50);
+
+  servo1.attach( servoPin ); //, 700,2300 );  // maybe give min/max here too?
+  servoEaser.begin( servo1, servoFrameMillis );
+  servoEaser.setMinMaxMicroseconds(700,2300);
+  servoEaser.play( myServoMoves0, myServoMovesCount0 );
+
   
-  myservo.attach(10);  
+
 }
- 
+
 void loop() {
-  // The sensor is triggered by a HIGH pulse of 10 or more microseconds.
-  // Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(5);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
- 
-  // Read the signal from the sensor: a HIGH pulse whose
-  // duration is the time (in microseconds) from the sending
-  // of the ping to the reception of its echo off of an object.
-  pinMode(echoPin, INPUT);
-  duration = pulseIn(echoPin, HIGH);
- 
-  // Convert the time into a distance
-  cm = (duration/2) / 29.1;     // Divide by 29.1 or multiply by 0.0343
-  
-  if ( int(cm) <10 ) {
-    myservo.write(45);
-    delay(200);
-    myservo.write(135);
+  if (millis() - delayStart >= 10000){
+      rand_dist = random(200,1000);
+      delayStart = millis();
   }
   
-  if ( 10 < int(cm) < 20 ) {
-    myservo.write(90);
-}
-0
-  if ( int(cm) > 30 ) {
-    myservo.write(60);
-    delay(2000);
-    myservo.write(120);
-}
-
-  Serial.print(inches);
-  Serial.print("in, ");
-  Serial.print(cm);
-  Serial.print("cm");
-  Serial.println();
+  dist = sensor.read();
+  if (dist <=rand_dist){
+    dist_state = 0;
+  } else if ( rand_dist < dist && dist <= rand_dist + 500){
+    dist_state = 1;
+  } else if ( rand_dist + 500 < dist && dist <= rand_dist + 1000){
+    dist_state = 2;
+  } else {
+    dist_state = 3;
+  }
+  Serial.println(rand_dist);
+  if (dist_state != dist_state_old){
+    Serial.println(dist_state);
+    dist_state_old = dist_state;
+    switch (dist_state){
+      case 0: 
+      servoEaser.play( myServoMoves0, myServoMovesCount0 );
+      servoEaser.start( );
+      break;
+      case 1: 
+      servoEaser.play( myServoMoves1, myServoMovesCount1 );
+      servoEaser.start( );
+      break;
+      case 2: 
+      servoEaser.play( myServoMoves2, myServoMovesCount2 );
+      servoEaser.start( );
+      break;
+      case 3: 
+      servoEaser.play( myServoMoves3, myServoMovesCount3 );
+      servoEaser.start( );
+      break;
+    }
+  }
   
-  delay(250);
+  //Serial.println(dist);
+  // put your main code here, to run repeatedly:
+  servoEaser.update();
+}
